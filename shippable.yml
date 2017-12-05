@@ -27,8 +27,10 @@ build:
     - echo "build for branch "$BRANCH" successful"
 
   on_success:
-    - shipctl put_resource_state npm-module versionName $BRANCH.$BUILD_NUMBER
-  
+    - if [ "$BRANCH" == "master" ]; then 
+        shipctl put_resource_state npm-module-trigger versionName module.$BRANCH.$BUILD_NUMBER
+        echo "successfully update npm-module-trigger"
+      fi
 
 # Integrations are used to connect external resources to CI
 # http://docs.shippable.com/integrations/overview/
@@ -42,3 +44,9 @@ integrations:
       on_success: change
       on_failure: always
       on_pull_request: never
+
+jobs:
+  - name: node-dependency-sample-module_runCI
+    type: runCI
+    steps:
+      - OUT: npm-module-trigger
