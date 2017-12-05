@@ -1,6 +1,9 @@
 # Language setting http://docs.shippable.com/ci/languages/node/
 language: node_js
 
+node_js:
+  - 6.9
+
 # use this to control what branches get built.
 # http://docs.shippable.com/ci/advancedOptions/branches/
 branches:
@@ -24,13 +27,16 @@ build:
     - shippable_retry npm install
 
   post_ci:
-    - echo "build for branch "$BRANCH" successful"
+    - echo -e "build for branch \'$BRANCH\' successful"
 
   on_success:
-    - if [ "$BRANCH" == "master" ]; then 
-        shipctl put_resource_state npm-module-trigger versionName module.$BRANCH.$BUILD_NUMBER
-        echo "successfully update npm-module-trigger"
-      fi
+    - >
+        if [[ "$BRANCH" == "master" ]]; then 
+          shipctl put_resource_state npm-module-trigger versionName module.$BRANCH.$BUILD_NUMBER
+          echo "successfully updated npm-module-trigger"
+        else 
+          echo -e "not on branch \"master\" - no new version created"
+        fi
 
 # Integrations are used to connect external resources to CI
 # http://docs.shippable.com/integrations/overview/

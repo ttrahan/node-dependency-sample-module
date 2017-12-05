@@ -1,5 +1,5 @@
-[![Node.Js Connect Logo](http://www.nodejsconnect.com//sites/default/themes/drupalconnect/images/layout/logo-lo.png)](http://www.nodejsconnect.com/)
+![AyeAye](https://github.com/shippableSamples/node-build-push-docker-hub/blob/master/public/resources/images/captain.png)
 
 # Simple Node.js module
-
+For use with https://github.com/ttrahan/node-dependency-sample-app
 
