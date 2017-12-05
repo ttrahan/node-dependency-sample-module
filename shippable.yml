@@ -1,6 +1,9 @@
 # Language setting http://docs.shippable.com/ci/languages/node/
 language: node_js
 
+node_js:
+  - 6.9
+
 # use this to control what branches get built.
 # http://docs.shippable.com/ci/advancedOptions/branches/
 branches:
@@ -24,7 +27,7 @@ build:
     - shippable_retry npm install
 
   post_ci:
-    - echo "build for branch "$BRANCH" successful"
+    - echo -e "build for branch \'$BRANCH\' successful"
 
   on_success:
     - if [[ "$BRANCH" == "master" ]] && [[ "$IS_PULL_REQUEST" != true ]]; then 
