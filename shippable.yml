@@ -44,9 +44,3 @@ integrations:
       on_success: change
       on_failure: always
       on_pull_request: never
-
-jobs:
-  - name: node-dependency-sample-module_runCI
-    type: runCI
-    steps:
-      - OUT: npm-module-trigger
