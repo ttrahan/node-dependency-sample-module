@@ -1,0 +1,52 @@
+# Language setting http://docs.shippable.com/ci/languages/node/
+language: node_js
+
+node_js:
+  - 6.9
+
+# use this to control what branches get built.
+# http://docs.shippable.com/ci/advancedOptions/branches/
+branches:
+  only:
+    - master
+    - feature*
+
+# using pre-defined build variables
+# full list http://docs.shippable.com/ci/advancedOptions/environmentVariables/
+env:
+  global:
+    - TEST_RESULTS_DIR=$SHIPPABLE_REPO_DIR/shippable/testresults
+    - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
+    - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/tests
+    - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/
+
+build:
+  ci:
+    # npm mirrors can sometimes be flaky, better to use shippable_retry
+    # http://docs.shippable.com/ci/advancedOptions/retry/
+    - shippable_retry npm install
+
+  post_ci:
+    - echo -e "build for branch \'$BRANCH\' successful"
+
+  on_success:
+    - >
+        if [[ "$BRANCH" == "master" ]]; then 
+          shipctl put_resource_state npm-module-trigger versionName module.$BRANCH.$BUILD_NUMBER
+          echo "successfully updated npm-module-trigger"
+        else 
+          echo -e "not on branch \"master\" - no new version created"
+        fi
+
+# Integrations are used to connect external resources to CI
+# http://docs.shippable.com/integrations/overview/
+integrations:
+  # http://docs.shippable.com/ci/shippableyml/#notifications
+  notifications:
+    # turns off email for PR builds, notifies only on failure or change in status
+    # http://docs.shippable.com/integrations/notifications/email/
+    - integrationName: email
+      type: email
+      on_success: change
+      on_failure: always
+      on_pull_request: never
