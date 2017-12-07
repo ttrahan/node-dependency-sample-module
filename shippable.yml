@@ -19,6 +19,7 @@ env:
     - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
     - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/tests
     - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/
+    - TRIGGER_BRANCH=$BRANCH
 
 build:
   ci:
@@ -30,9 +31,14 @@ build:
     - echo -e "build for branch \"$BRANCH\" successful"
 
   on_success:
+    # - |
+    #     if [[ "$BRANCH" == "master" ]] && [[ "$IS_PULL_REQUEST" != true ]]; then 
+    #       shipctl put_resource_state npm-module-trigger versionName module.$BRANCH.$BUILD_NUMBER
+    #       echo "successfully updated npm-module-trigger"
+    #     fi
     - |
-        if [[ "$BRANCH" == "master" ]] && [[ "$IS_PULL_REQUEST" != true ]]; then 
-          shipctl put_resource_state npm-module-trigger versionName module.$BRANCH.$BUILD_NUMBER
+        if [[ "$IS_PULL_REQUEST" != true ]]; then 
+          shipctl put_resource_state_multi npm-module-params MODULE_VERSION $BRANCH.$BUILD_NUMBER MODULE_BRANCH $BRANCH TRIGGER_BRANCH $TRIGGER_BRANCH
           echo "successfully updated npm-module-trigger"
         fi
 
