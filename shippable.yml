@@ -38,7 +38,9 @@ build:
     #     fi
     - |
         if [[ "$IS_PULL_REQUEST" != true ]]; then 
-          shipctl put_resource_state_multi npm-module-params MODULE_VERSION $BRANCH.$BUILD_NUMBER MODULE_BRANCH $BRANCH TRIGGER_BRANCH $TRIGGER_BRANCH
+          shipctl put_resource_state npm-module-params MODULE_VERSION $BRANCH.$BUILD_NUMBER
+          shipctl put_resource_state npm-module-params MODULE_BRANCH $BRANCH
+          shipctl put_resource_state npm-module-params TRIGGER_BRANCH $TRIGGER_BRANCH
           echo "successfully updated npm-module-trigger"
         fi
 
